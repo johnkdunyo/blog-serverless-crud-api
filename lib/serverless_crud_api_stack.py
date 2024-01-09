@@ -1,13 +1,14 @@
 import os
+import aws_cdk
 from aws_cdk import (
     # Duration,
-    core,
     Stack,
     aws_dynamodb as dynamodb,
     aws_apigateway as apigateway,
     aws_lambda as lambda_,
     # aws_sqs as sqs,
 )
+
 from constructs import Construct
 
 class ServerlessCrudApiStack(Stack):
@@ -32,21 +33,18 @@ class ServerlessCrudApiStack(Stack):
                 type=dynamodb.AttributeType.STRING
             ),
             billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,  # or PROVISIONED based on your needs
-            removal_policy=core.RemovalPolicy.DESTROY  # Change to RETAIN if you want to keep the table on stack deletion
+            removal_policy=aws_cdk.RemovalPolicy.DESTROY  # Change to RETAIN if you want to keep the table on stack deletion
         )
 
         # lamdba handle for the blogs
         blogs_handler_function = lambda_.Function(
-            self, 'ProductLambdaFunction',
+            self, id='blogLambdaFunction',
             runtime=lambda_.Runtime.PYTHON_3_9,
             handler='index.handler',
             code=lambda_.Code.from_asset(os.path.join("./", 'resources/blog')), #path to lamdba functions
             environment={
                 'PRIMARY_KEY': 'blogID',
                 'DYNAMODB_TABLE_NAME': blog_table.table_name
-            },
-            bundling={
-                'externalModules': ['aws-sdk']
             }
         )
 
@@ -58,6 +56,7 @@ class ServerlessCrudApiStack(Stack):
         # Create the API Gateway
         apigw = apigateway.LambdaRestApi(
             self, 
+            id="blogRestAPI",
             rest_api_name="Blog RestAPI",
             handler=blogs_handler_function,
             proxy=False

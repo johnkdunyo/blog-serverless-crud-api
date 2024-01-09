@@ -39,6 +39,5 @@ class ServerlessCrudApiStack(Stack):
                 'allow_origins': apigateway.Cors.ALL_ORIGINS,
                 'allow_methods': apigateway.Cors.ALL_METHODS
             },
-            api_key_source_type=apigateway.ApiKeySourceType.HEADER
         )
 

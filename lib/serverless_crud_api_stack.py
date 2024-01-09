@@ -1,6 +1,8 @@
 from aws_cdk import (
     # Duration,
+    core,
     Stack,
+    aws_dynamodb as dynamodb
     # aws_sqs as sqs,
 )
 from constructs import Construct
@@ -12,8 +14,4 @@ class ServerlessCrudApiStack(Stack):
 
         # The code that defines your stack goes here
 
-        # example resource
-        # queue = sqs.Queue(
-        #     self, "ServerlessCrudApiQueue",
-        #     visibility_timeout=Duration.seconds(300),
-        # )
+

@@ -1,7 +1,7 @@
 import aws_cdk as core
 import aws_cdk.assertions as assertions
 
-from serverless_crud_api.serverless_crud_api_stack import ServerlessCrudApiStack
+from lib.serverless_crud_api_stack import ServerlessCrudApiStack
 
 # example tests. To run these tests, uncomment this file along with the example
 # resource in serverless_crud_api/serverless_crud_api_stack.py

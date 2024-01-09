@@ -3,7 +3,7 @@ import os
 
 import aws_cdk as cdk
 
-from serverless_crud_api.serverless_crud_api_stack import ServerlessCrudApiStack
+from lib.serverless_crud_api_stack import ServerlessCrudApiStack
 
 
 app = cdk.App()

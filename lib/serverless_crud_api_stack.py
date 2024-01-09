@@ -42,7 +42,7 @@ class ServerlessCrudApiStack(Stack):
             handler='index.handler',
             code=lambda_.Code.from_asset(os.path.join("./", 'resources/blog')), #path to lamdba functions
             environment={
-                'PRIMARY_KEY': 'id',
+                'PRIMARY_KEY': 'blogID',
                 'DYNAMODB_TABLE_NAME': blog_table.table_name
             },
             bundling={

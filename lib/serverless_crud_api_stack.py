@@ -49,8 +49,8 @@ class ServerlessCrudApiStack(Stack):
                 'externalModules': ['aws-sdk']
             }
         )
+        
 
-       
         # Create the API Gateway
         apigw = apigateway.LambdaRestApi(
             self, 
@@ -58,6 +58,17 @@ class ServerlessCrudApiStack(Stack):
             handler=blogs_handler_function,
             proxy=False
         )
+
+
+        # routings
+        blog_resource = apigw.root.add_resource('blog')
+        blog_resource.add_method("GET") #GET /blog
+        blog_resource.add_method("POST") #POST /blog
+
+        single_blog = blog_resource.add_resource('{blogID}')
+        single_blog.add_method("GET") #GET /blog/:blogID
+        single_blog.add_method("DELETE") #DELETE /blog/:blogID
+        single_blog.add_method("PUT") #PUT /blog/:blogID
 
 
         

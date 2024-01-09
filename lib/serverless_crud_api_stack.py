@@ -2,7 +2,8 @@ from aws_cdk import (
     # Duration,
     core,
     Stack,
-    aws_dynamodb as dynamodb
+    aws_dynamodb as dynamodb,
+    aws_apigateway as apigateway,
     # aws_sqs as sqs,
 )
 from constructs import Construct
@@ -28,5 +29,16 @@ class ServerlessCrudApiStack(Stack):
             ),
             billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,  # or PROVISIONED based on your needs
             removal_policy=core.RemovalPolicy.DESTROY  # Change to RETAIN if you want to keep the table on stack deletion
+        )
+
+
+        # Create the API Gateway
+        apigw = apigateway.RestApi(self, 'blogRestAPI',
+            rest_api_name='Blog API',
+            default_cors_preflight_options={
+                'allow_origins': apigateway.Cors.ALL_ORIGINS,
+                'allow_methods': apigateway.Cors.ALL_METHODS
+            },
+            api_key_source_type=apigateway.ApiKeySourceType.HEADER
         )
 

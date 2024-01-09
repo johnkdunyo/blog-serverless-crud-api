@@ -38,7 +38,7 @@ class ServerlessCrudApiStack(Stack):
         # lamdba handle for the blogs
         blogs_handler_function = lambda_.Function(
             self, 'ProductLambdaFunction',
-            runtime=lambda_.Runtime.NODEJS_14_X,
+            runtime=lambda_.Runtime.PYTHON_3_9,
             handler='index.handler',
             code=lambda_.Code.from_asset(os.path.join(os.path.dirname(__file__), '/../resources/blog')), #path to lamdba functions
             environment={
@@ -49,6 +49,10 @@ class ServerlessCrudApiStack(Stack):
                 'externalModules': ['aws-sdk']
             }
         )
+
+
+        # add permission for handle to access dynamotable
+        blog_table.grant_read_write_data(blogs_handler_function)
         
 
         # Create the API Gateway

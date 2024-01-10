@@ -6,6 +6,9 @@ from aws_cdk import (
     aws_dynamodb as dynamodb,
     aws_apigateway as apigateway,
     aws_lambda as lambda_,
+    
+    
+    
     # aws_sqs as sqs,
 )
 
@@ -23,7 +26,7 @@ class ServerlessCrudApiStack(Stack):
         blog_table = dynamodb.Table(
             self,
             id="blogTable",
-            table_name="Blog Table",
+            table_name="blog_table",
             partition_key=dynamodb.Attribute(
                 name="blogId",
                 type=dynamodb.AttributeType.STRING
@@ -57,14 +60,25 @@ class ServerlessCrudApiStack(Stack):
         apigw = apigateway.LambdaRestApi(
             self, 
             id="blogRestAPI",
-            rest_api_name="Blog RestAPI",
+            rest_api_name="blog_restapi",
             handler=blogs_handler_function,
-            proxy=False
+            proxy=True,
+            api_key_source_type= apigateway.ApiKeySourceType.HEADER #added api source key
         )
 
+        # define api key
+        api_key = apigateway.ApiKey(self, id="blogApiKey", value="MyNewApiKey0123456789")
+
+        # define usage plan
+        usage_plan = apigateway.UsagePlan(self, id="blogApiUsagePlan", name="blog_api_usage_plan", api_stages=[  {
+                    'api': apigw,
+                    'stage': apigw.deployment_stage,
+                },])
+        
+        usage_plan.add_api_key(api_key)  #add api key to usage plan
 
         # routings
-        blog_resource = apigw.root.add_resource('blog')
+        blog_resource = apigw.root.add_resource('blog',)
         blog_resource.add_method("GET") #GET /blog
         blog_resource.add_method("POST") #POST /blog
 
@@ -73,6 +87,9 @@ class ServerlessCrudApiStack(Stack):
         single_blog.add_method("DELETE") #DELETE /blog/:blogID
         single_blog.add_method("PUT") #PUT /blog/:blogID
 
+
+        # output api to consule after deployment
+        aws_cdk.CfnOutput(self, 'API Key ID', value=api_key.key_id)
 
         
 
